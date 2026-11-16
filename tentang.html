@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang | WebGIS Rumah Makan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">⌖</div>
+            <div>
+                <h2>GeoFood</h2>
+                <p>WebGIS Rumah Makan</p>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="beranda.html">Beranda</a>
+            <a href="peta.html">Peta</a>
+            <a href="daftar.html">Daftar Rumah Makan</a>
+            <a href="tentang.html" class="active">Tentang</a>
+        </nav>
+    </header>
+
+    <!-- PAGE HEADER -->
+    <section class="about-header">
+        <span class="about-label">TENTANG</span>
+        <h1>Tentang Project</h1>
+        <p>
+            Latar belakang, cakupan penelitian, metode pengolahan data,
+            serta batasan informasi pada WebGIS Rumah Makan Malam.
+        </p>
+    </section>
+
+    <!-- ABOUT CONTENT -->
+    <main class="about-container">
+
+        <!-- TUJUAN PROJECT -->
+        <section class="about-card">
+            <div class="about-card-heading">
+                <div class="about-icon">◉</div>
+                <h2>Tujuan project</h2>
+            </div>
+
+            <p>
+                Project ini bertujuan membantu masyarakat, mahasiswa,
+                pekerja shift malam, dan pendatang menemukan rumah makan
+                yang masih beroperasi setelah pukul 23.00 WITA.
+                Informasi disajikan secara spasial agar pengguna dapat
+                melihat sebaran lokasi dan memilih tempat makan terdekat.
+            </p>
+        </section>
+
+        <!-- CAKUPAN PENELITIAN -->
+        <section class="about-card">
+            <div class="about-card-heading">
+                <div class="about-icon">⊞</div>
+                <h2>Cakupan penelitian</h2>
+            </div>
+
+            <p>
+                Penelitian mencakup empat wilayah di Provinsi
+                Kalimantan Selatan:
+            </p>
+
+            <div class="coverage-grid">
+                <div class="coverage-item">
+                    <strong>Banjarmasin</strong>
+                    <span>Kota Banjarmasin</span>
+                </div>
+
+                <div class="coverage-item">
+                    <strong>Banjarbaru</strong>
+                    <span>Kota Banjarbaru</span>
+                </div>
+
+                <div class="coverage-item">
+                    <strong>Martapura</strong>
+                    <span>Kabupaten Banjar</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- METODE DAN ALAT -->
+        <section class="about-card">
+            <div class="about-card-heading">
+                <div class="about-icon">⚙</div>
+                <h2>Metode dan alat</h2>
+            </div>
+
+            <p>
+                QGIS direncanakan sebagai alat utama untuk pengolahan
+                data spasial. Website ini merupakan antarmuka yang
+                dikembangkan untuk menampilkan data spasial tersebut,
+                dan bukan merupakan sistem GIS yang lengkap.
+            </p>
+
+            <div class="method-grid">
+
+                <div class="method-item">
+                    <div class="method-number">1</div>
+                    <div>
+                        <h3>Pengumpulan data</h3>
+                        <p>
+                            Pengumpulan data rumah makan dilakukan melalui
+                            web scraping menggunakan Python dari Google Maps,
+                            meliputi nama, alamat, jam operasional, dan
+                            informasi kisaran harga apabila tersedia.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="method-item">
+                    <div class="method-number">2</div>
+                    <div>
+                        <h3>Pengolahan spasial di QGIS</h3>
+                        <p>
+                            Digitalisasi titik lokasi, validasi koordinat,
+                            dan penyusunan atribut sebelum diekspor.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="method-item">
+                    <div class="method-number">3</div>
+                    <div>
+                        <h3>Ekspor GeoJSON</h3>
+                        <p>
+                            Hasil olahan diekspor sebagai GeoJSON
+                            (EPSG:4326) untuk dimuat ke website.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="method-item">
+                    <div class="method-number">4</div>
+                    <div>
+                        <h3>Penyajian WebGIS</h3>
+                        <p>
+                            Website menampilkan titik lokasi, filter,
+                            dan detail rumah makan berdasarkan dataset tersebut.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SUMBER DATA -->
+        <section class="about-card">
+            <div class="about-card-heading">
+                <div class="about-icon">▤</div>
+                <h2>Sumber data</h2>
+            </div>
+
+            <p>
+                Data rumah makan akan bersumber dari hasil dari
+                pengumpulan data oleh tim proyek, lalu diolah di QGIS.
+            </p>
+        </section>
+
+        <!-- BATASAN INFORMASI -->
+        <section class="about-card limitation-card">
+            <div class="about-card-heading">
+                <div class="limitation-icon">⚠</div>
+                <h2>Batasan informasi</h2>
+            </div>
+
+            <ul>
+                <li>
+                    Jam operasional dan harga dapat berubah sewaktu-waktu
+                    dan memerlukan verifikasi langsung sebelum berkunjung.
+                </li>
+
+                <li>
+                    Kelengkapan informasi bergantung pada dataset
+                    yang berhasil dikumpulkan.
+                </li>
+            </ul>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>
+            WebGIS Rumah Makan Malam
+        </p>
+
+        <p>
+            Informasi bergantung pada dataset yang dikumpulkan
+            dan perlu diverifikasi.
+        </p>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

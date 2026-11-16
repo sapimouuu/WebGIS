@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Rumah Makan | WebGIS Rumah Makan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">⌖</div>
+            <div>
+                <h2>GeoFood</h2>
+                <p>WebGIS Rumah Makan</p>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="beranda.html">Beranda</a>
+            <a href="peta.html">Peta</a>
+            <a href="daftar.html" class="active">Daftar Rumah Makan</a>
+            <a href="tentang.html">Tentang</a>
+        </nav>
+    </header>
+
+    <!-- PAGE HEADER -->
+    <section class="page-header">
+        <div>
+            <span class="page-label">DAFTAR</span>
+            <h1>Daftar Rumah Makan</h1>
+            <p>
+                Telusuri rumah makan yang beroperasi setelah pukul 23.00
+                berdasarkan nama, wilayah, jam operasional, dan kisaran harga.
+            </p>
+        </div>
+
+        <div class="dataset-status">
+            <span></span>
+            Dataset belum tersedia
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="list-container">
+
+        <!-- FILTER SIDEBAR -->
+        <aside class="list-sidebar">
+
+            <div class="list-filter-group">
+                <label for="searchRestaurant">Pencarian</label>
+                <input
+                    type="text"
+                    id="searchRestaurant"
+                    placeholder="Cari nama rumah makan..."
+                >
+            </div>
+
+            <div class="list-filter-group">
+                <label>Wilayah studi</label>
+
+                <div class="region-filter-list">
+                    <button class="selected" type="button">Semua wilayah</button>
+                    <button type="button">Banjarmasin</button>
+                    <button type="button">Banjarbaru</button>
+                    <button type="button">Martapura</button>
+                </div>
+            </div>
+
+            <div class="list-filter-group">
+                <label for="filterHours">Jam operasional</label>
+
+                <select id="filterHours">
+                    <option value="">Semua jam operasional</option>
+                    <option value="23">Buka setelah 23.00</option>
+                    <option value="24">Buka 24 jam</option>
+                </select>
+            </div>
+
+            <div class="list-filter-group">
+                <label for="filterPrice">Kisaran harga</label>
+
+                <select id="filterPrice">
+                    <option value="">Semua kisaran harga</option>
+                    <option value="15000">Di bawah Rp15.000</option>
+                    <option value="25000">Rp15.000 - Rp25.000</option>
+                    <option value="50000">Di atas Rp25.000</option>
+                </select>
+            </div>
+
+            <div class="list-filter-group">
+                <label for="sortRestaurant">Urutkan</label>
+
+                <select id="sortRestaurant">
+                    <option value="name">Nama (A–Z)</option>
+                    <option value="price">Harga terendah</option>
+                    <option value="hours">Jam operasional</option>
+                </select>
+            </div>
+
+            <button type="button" class="reset-filter" id="resetFilter">
+                Atur ulang filter
+            </button>
+
+        </aside>
+
+        <!-- RESTAURANT TABLE -->
+        <section class="restaurant-content">
+
+            <div class="table-heading">
+                <h3>Data rumah makan</h3>
+                <span>0 dari 0 record</span>
+            </div>
+
+            <div class="table-card">
+
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama rumah makan</th>
+                                <th>Alamat</th>
+                                <th>Wilayah</th>
+                                <th>Jam operasional</th>
+                                <th>Kisaran harga</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+                <div class="empty-table">
+
+                    <div class="empty-icon">▤</div>
+
+                    <h3>Dataset belum dimuat</h3>
+
+                    <p>
+                        Daftar rumah makan akan muncul setelah tim proyek
+                        menyediakan data hasil survei yang telah diverifikasi
+                        dan diolah di QGIS. Tidak ada data contoh yang ditampilkan.
+                    </p>
+
+                    <div class="empty-actions">
+                        <a href="peta.html" class="btn-primary">
+                            Buka Peta
+                        </a>
+
+                        <a href="tentang.html" class="btn-secondary">
+                            Tentang Proyek
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>
+            WebGIS Rumah Makan Malam
+        </p>
+
+        <p>
+            Informasi bergantung pada dataset yang dikumpulkan dan perlu diverifikasi.
+        </p>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

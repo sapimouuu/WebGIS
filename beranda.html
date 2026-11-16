@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda | WebGIS Rumah Makan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">⌖</div>
+            <div>
+                <h2>GeoFood</h2>
+                <p>WebGIS Rumah Makan</p>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="beranda.html" class="active">Beranda</a>
+            <a href="peta.html">Peta</a>
+            <a href="daftar.html">Daftar Rumah Makan</a>
+            <a href="tentang.html">Tentang</a>
+        </nav>
+    </header>
+
+    <!-- HERO SECTION -->
+    <main>
+        <section class="hero-section">
+
+            <div class="hero-content">
+
+                <div class="location-badge">
+                    <span>⌖</span>
+                    Banjarmasin - Banjarbaru - Martapura
+                </div>
+
+                <h1>
+                    Temukan Rumah Makan yang Masih Buka di Malam Hari
+                </h1>
+
+                <p class="hero-description">
+                    WebGIS Rumah Makan Malam adalah proyek geoinformatika
+                    untuk memetakan rumah makan yang beroperasi setelah
+                    pukul 23.00 di wilayah perkotaan Kalimantan Selatan,
+                    sehingga pengguna dapat menemukan lokasi, jam
+                    operasional, dan kisaran harga dengan mudah.
+                </p>
+
+                <!-- SEARCH PANEL -->
+                <div class="search-panel">
+
+                    <form id="searchForm">
+                        <label for="searchInput">
+                            Nama rumah makan atau lokasi
+                        </label>
+
+                        <div class="search-row">
+                            <input
+                                type="text"
+                                id="searchInput"
+                                placeholder="Contoh: nama rumah makan/jalan"
+                            >
+                            <button type="submit">Cari</button>
+                        </div>
+                    </form>
+
+                    <div class="region-filter">
+                        <label>Wilayah studi</label>
+
+                        <div class="region-options">
+
+                            <label class="region-option">
+                                <input type="checkbox" value="Banjarmasin">
+                                <span>
+                                    <strong>Banjarmasin</strong>
+                                    <small>Kota Banjarmasin</small>
+                                </span>
+                            </label>
+
+                            <label class="region-option">
+                                <input type="checkbox" value="Banjarbaru">
+                                <span>
+                                    <strong>Banjarbaru</strong>
+                                    <small>Kota Banjarbaru</small>
+                                </span>
+                            </label>
+
+                            <label class="region-option">
+                                <input type="checkbox" value="Martapura">
+                                <span>
+                                    <strong>Martapura</strong>
+                                    <small>Kabupaten Banjar</small>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HERO BUTTONS -->
+                <div class="hero-buttons">
+                    <a href="peta.html" class="btn-primary">
+                        Jelajahi Peta <span>→</span>
+                    </a>
+
+                    <a href="daftar.html" class="btn-secondary">
+                        Lihat Daftar Rumah Makan
+                    </a>
+                </div>
+
+                <!-- DATA NOTICE -->
+                <div class="data-notice">
+                    <span class="notice-icon">ⓘ</span>
+                    <p>
+                        Catatan: seluruh informasi rumah makan bergantung
+                        pada dataset yang dikumpulkan oleh tim proyek.
+                        Saat ini dataset belum dimuat, sehingga belum ada
+                        data lokasi yang ditampilkan.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- HERO IMAGE -->
+            <div class="hero-visual">
+                <div class="hero-image">
+                    <img
+                        src="rm.jpg"
+                        alt="Suasana rumah makan pada malam hari"
+                    >
+
+                    <div class="image-caption">
+                        <span>Fokus penelitian</span>
+                        <h3>
+                            Rumah makan yang beroperasi setelah pukul
+                            23.00 WITA
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- STUDY AREA -->
+        <section class="study-section">
+
+            <div class="section-heading">
+                <h2>Wilayah cakupan penelitian</h2>
+                <p>
+                    Pilih wilayah untuk membuka peta dengan tampilan
+                    yang langsung diarahkan ke area tersebut.
+                </p>
+            </div>
+
+            <div class="study-grid">
+
+                <a href="peta.html?wilayah=banjarmasin" class="study-card">
+                    <span>KOTA BANJARMASIN</span>
+                    <h3>Banjarmasin</h3>
+                    <p>Buka di peta ↗</p>
+                </a>
+
+                <a href="peta.html?wilayah=banjarbaru" class="study-card">
+                    <span>KOTA BANJARBARU</span>
+                    <h3>Banjarbaru</h3>
+                    <p>Buka di peta ↗</p>
+                </a>
+
+                <a href="peta.html?wilayah=martapura" class="study-card">
+                    <span>KABUPATEN BANJAR</span>
+                    <h3>Martapura</h3>
+                    <p>Buka di peta ↗</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- FEATURE SECTION -->
+        <section class="feature-section">
+
+            <div class="section-heading">
+                <h2>Fitur yang direncanakan</h2>
+            </div>
+
+            <div class="feature-grid">
+
+                <div class="feature-card">
+                    <div class="feature-icon">◫</div>
+                    <h3>Peta WebGIS</h3>
+                    <p>
+                        Lihat sebaran lokasi rumah makan pada peta
+                        interaktif setelah dataset spasial tersedia.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">◷</div>
+                    <h3>Filter jam operasional</h3>
+                    <p>
+                        Saring rumah makan berdasarkan jam tutup,
+                        mulai dari 23.00 hingga buka 24 jam.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">☷</div>
+                    <h3>Daftar terstruktur</h3>
+                    <p>
+                        Telusuri nama, alamat, jam operasional,
+                        dan kisaran harga dalam satu tabel.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">▤</div>
+                    <h3>Siap untuk data QGIS</h3>
+                    <p>
+                        Struktur data dirancang untuk menerima
+                        keluaran GeoJSON dari pengolahan di QGIS.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>
+            WebGIS Rumah Makan Malam
+        </p>
+
+        <p>
+            Informasi bergantung pada dataset yang dikumpulkan
+            dan perlu diverifikasi.
+        </p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
