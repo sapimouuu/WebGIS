@@ -1,11 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website Rumah Makan</title>
+    <title>WebGIS Rumah Makan</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">⌖</div>
+            <div>
+                <h2>GeoFood</h2>
+                <p>WebGIS Rumah Makan</p>
+            </div>
+        </div>
+
+        <nav class="navbar">
+            <a href="#beranda">Beranda</a>
+            <a href="#peta" class="active">Peta</a>
+            <a href="#daftar">Daftar Rumah Makan</a>
+            <a href="#tentang">Tentang</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span class="eyebrow">JELAJAHI KULINER</span>
+                <h3>Temukan Rumah Makan</h3>
+                <p>Temukan tempat makan yang masih beroperasi pada malam hari.</p>
+            </div>
+
+            <div class="filter-group">
+                <label for="search">Cari Lokasi</label>
+                <input type="text" id="search"
+                    placeholder="Nama rumah makan atau alamat...">
+            </div>
+
+            <div class="filter-group">
+                <label>Wilayah Studi</label>
+                <div class="region-list">
+                    <button class="active">Semua Wilayah</button>
+                    <button>Banjarmasin</button>
+                    <button>Banjarbaru</button>
+                    <button>Martapura</button>
+                    <button>Gambut</button>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label for="operasional">Jam Operasional</label>
+                <select id="operasional">
+                    <option value="">Semua jam operasional</option>
+                    <option value="23">Buka setelah 23.00</option>
+                    <option value="00">Buka 24 jam</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="harga">Kisaran Harga</label>
+                <select id="harga">
+                    <option value="">Semua kisaran harga</option>
+                    <option value="15000">Di bawah Rp15.000</option>
+                    <option value="25000">Rp15.000 - Rp25.000</option>
+                    <option value="50000">Di atas Rp25.000</option>
+                </select>
+            </div>
+
+            <div class="result-section">
+                <div class="result-header">
+                    <h4>Hasil Pencarian</h4>
+                    <span>0 lokasi</span>
+                </div>
+                <p class="empty-result">
+                    Lokasi rumah makan akan ditampilkan di sini.
+                </p>
+            </div>
+        </aside>
+
+        <main class="map-area" id="peta">
+            <div class="map-heading">
+                <div>
+                    <h2>Peta Persebaran Rumah Makan</h2>
+                    <p>Banjarmasin, Banjarbaru, Martapura, dan Gambut</p>
+                </div>
+                <span class="map-status">● Peta Aktif</span>
+            </div>
+
+            <div class="map-wrapper">
+                <div id="map"></div>
+
+                <div class="map-legend">
+                    <h4>Legenda</h4>
+                    <p><span class="legend-dot"></span> Rumah makan</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
