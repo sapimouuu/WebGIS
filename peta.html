@@ -27,6 +27,16 @@
     </header>
 
     <div class="container">
+        <!-- 1. JUDUL -->
+        <div class="map-heading">
+            <div>
+                <h2>Peta Persebaran Rumah Makan</h2>
+                <p>Banjarmasin, Banjarbaru, dan Martapura</p>
+            </div>
+            <span class="map-status">● Peta Aktif</span>
+        </div>
+
+        <!-- 2. SIDEBAR -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <span class="eyebrow">JELAJAHI KULINER</span>
@@ -80,22 +90,13 @@
             </div>
         </aside>
 
-        <main class="map-area" id="peta">
-            <div class="map-heading">
-                <div>
-                    <h2>Peta Persebaran Rumah Makan</h2>
-                    <p>Banjarmasin, Banjarbaru, dan Martapura</p>
-                </div>
-                <span class="map-status">● Peta Aktif</span>
-            </div>
+        <!-- 3. PETA -->
+        <main class="map-wrapper" id="peta">
+            <div id="map"></div>
 
-            <div class="map-wrapper">
-                <div id="map"></div>
-
-                <div class="map-legend">
-                    <h4>Legenda</h4>
-                    <p><span class="legend-dot"></span> Rumah makan</p>
-                </div>
+            <div class="map-legend">
+                <h4>Legenda</h4>
+                <p><span class="legend-dot"></span> Rumah makan</p>
             </div>
         </main>
     </div>
