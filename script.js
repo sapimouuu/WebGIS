@@ -9,7 +9,9 @@ L.tileLayer(
     }
 ).addTo(map);
 
-// Membaca data rumah makan dari GeoJSON
+//data dari geojson
+let allFeatures = [];
+let resultLayer;
 fetch('data/rumah_makan.geojson')
     .then(response => {
         if (!response.ok) {
@@ -17,27 +19,140 @@ fetch('data/rumah_makan.geojson')
         }
         return response.json();
     })
-    .then(data => {
-        //titik rumah makan di peta
-        L.geoJSON(data, {
-    onEachFeature: function(feature, layer) {
-        const info = feature.properties;
+    
+//menampilkan data rumah makan
+.then(data => {
+    allFeatures = data.features;
+    function updateMap(filteredData) {
+        // Menghapus marker sebelumnya
+        map.removeLayer(resultLayer);
 
-        layer.bindPopup(`
-            <b>${info.tempat}</b><br>
-            ${info.alamat}<br><br>
-            <b>Jam Operasional:</b> ${info.jam_buka}<br>
-            <b>Kisaran Harga:</b> ${info.harga_makanan}<br><br>
-            <a href="${info.link}" target="_blank">
-                Lihat di Google Maps
-            </a>
-        `);
-    }
+        //menampilkan marker dri hasil filter
+        resultLayer = L.geoJSON(filteredData, {
+            onEachFeature: function(feature, layer) {
+                const info = feature.properties;
+
+                layer.bindPopup(`
+                    <b>${info.tempat}</b><br>
+                    ${info.alamat}<br><br>
+                    <b>Jam Operasional:</b> ${info.jam_buka}<br>
+                    <b>Kisaran Harga:</b> ${info.harga_makanan}<br><br>
+                    <a href="${info.link}" target="_blank">
+                        Lihat di Google Maps
+                    </a>
+                `);
+            }
         }).addTo(map);
-    })
-    .catch(error => {
-        console.error('Gagal memuat GeoJSON:', error);
+    }
+    
+    // Fungsi mencari rumah makan berdasarkan nama atau alamat
+    function searchRestaurant(keyword) {
+        return allFeatures.filter(feature => {
+            const info = feature.properties;
+
+            return (
+                info.tempat.toLowerCase().includes(keyword.toLowerCase()) ||
+                info.alamat.toLowerCase().includes(keyword.toLowerCase())
+            );
+        });
+    }
+
+    resultLayer = L.geoJSON(data, {
+        onEachFeature: function(feature, layer) {
+            const info = feature.properties;
+
+            layer.bindPopup(`
+                <b>${info.tempat}</b><br>
+                ${info.alamat}<br><br>
+                <b>Jam Operasional:</b> ${info.jam_buka}<br>
+                <b>Kisaran Harga:</b> ${info.harga_makanan}<br><br>
+                <a href="${info.link}" target="_blank">
+                    Lihat di Google Maps
+                </a>
+            `);
+        }
+    }).addTo(map);
+
+    // Mengambil elemen hasil pencarian
+    const resultCount = document.querySelector('.result-header span');
+    const resultSection = document.querySelector('.result-section');
+    const emptyResult = document.querySelector('.empty-result');
+
+    // Membuat dropdown daftar rumah makan
+    const dropdown = document.createElement('details');
+    dropdown.className = 'result-dropdown';
+
+    const dropdownTitle = document.createElement('summary');
+    dropdownTitle.textContent = 'Lihat Daftar Rumah Makan';
+
+    const resultList = document.createElement('div');
+    resultList.className = 'result-list';
+
+    dropdown.appendChild(dropdownTitle);
+    dropdown.appendChild(resultList);
+
+    data.features.forEach((feature, index) => {
+        const info = feature.properties;
+        const item = document.createElement('button');
+
+        item.className = 'result-item';
+        item.textContent = info.tempat;
+
+        // Klik nama untuk membuka lokasi pada peta
+        item.addEventListener('click', function() {
+            const layer = resultLayer.getLayers()[index];
+
+            map.setView(layer.getLatLng(), 16);
+            layer.openPopup();
+        });
+
+        resultList.appendChild(item);
     });
+
+    // Memperbarui jumlah dan isi hasil pencarian
+    resultCount.textContent = `${data.features.length} lokasi`;
+    emptyResult.remove();
+    resultSection.appendChild(dropdown);
+
+    const searchInput = document.getElementById('search');
+
+    searchInput.addEventListener('input', function() {
+        const keyword = this.value.trim();
+
+        // Mengambil data sesuai kata pencarian
+        const filteredFeatures = searchRestaurant(keyword);
+
+        // Memperbarui jumlah hasil
+        resultCount.textContent = `${filteredFeatures.length} lokasi`;
+
+        // Memperbarui marker pada peta
+        updateMap({
+            type: 'FeatureCollection',
+            features: filteredFeatures
+        });
+        // Memperbarui daftar rumah makan
+        resultList.innerHTML = '';
+
+        filteredFeatures.forEach((feature, index) => {
+            const info = feature.properties;
+            const item = document.createElement('button');
+
+            item.className = 'result-item';
+            item.textContent = info.tempat;
+
+            item.addEventListener('click', function() {
+                const layer = resultLayer.getLayers()[index];
+                map.setView(layer.getLatLng(), 16);
+                layer.openPopup();
+            });
+
+            resultList.appendChild(item);
+        });
+    })
+})
+.catch(error => {
+        console.error('Gagal memuat GeoJSON:', error);
+});
 
 // Menyesuaikan ukuran peta dengan container
 setTimeout(() => {

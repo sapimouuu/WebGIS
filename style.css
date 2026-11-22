@@ -1395,3 +1395,96 @@ a {
     object-fit: contain;
     display: block;
 }
+
+
+/* DAFTAR HASIL PENCARIAN PETA */
+.result-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.result-item {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #e1e8f0;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #354a61;
+    font-family: inherit;
+    font-size: 11px;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.result-item:hover {
+    border-color: #5285bb;
+    background: #f1f6fc;
+    color: #2864a5;
+}
+
+
+/* DROPDOWN HASIL PENCARIAN */
+.result-dropdown {
+    margin-top: 10px;
+    border: 1px solid #e1e8f0;
+    border-radius: 9px;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.result-dropdown summary {
+    padding: 11px 12px;
+    color: #315f9d;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.result-dropdown summary::-webkit-details-marker {
+    display: none;
+}
+
+.result-dropdown summary::after {
+    content: "▾";
+    font-size: 16px;
+    color: #5285bb;
+}
+
+.result-dropdown[open] summary::after {
+    content: "−";
+}
+
+.result-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 9px 9px;
+    max-height: 220px;
+    overflow-y: auto;
+    border-top: 1px solid #edf0f4;
+}
+
+.result-item {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 7px;
+    background: #f4f7fb;
+    color: #354a61;
+    font-family: inherit;
+    font-size: 11px;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.result-item:hover {
+    background: #eaf2fb;
+    color: #2864a5;
+}
