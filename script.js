@@ -9,6 +9,36 @@ L.tileLayer(
     }
 ).addTo(map);
 
+// Membaca data rumah makan dari GeoJSON
+fetch('data/rumah_makan.geojson')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('File GeoJSON tidak ditemukan');
+        }
+        return response.json();
+    })
+    .then(data => {
+        //titik rumah makan di peta
+        L.geoJSON(data, {
+    onEachFeature: function(feature, layer) {
+        const info = feature.properties;
+
+        layer.bindPopup(`
+            <b>${info.tempat}</b><br>
+            ${info.alamat}<br><br>
+            <b>Jam Operasional:</b> ${info.jam_buka}<br>
+            <b>Kisaran Harga:</b> ${info.harga_makanan}<br><br>
+            <a href="${info.link}" target="_blank">
+                Lihat di Google Maps
+            </a>
+        `);
+    }
+        }).addTo(map);
+    })
+    .catch(error => {
+        console.error('Gagal memuat GeoJSON:', error);
+    });
+
 // Menyesuaikan ukuran peta dengan container
 setTimeout(() => {
     map.invalidateSize();
