@@ -174,7 +174,6 @@ body {
     border-color: #2864a5;
 }
 
-/* RESULT */
 .result-section {
     border-top: 1px solid #edf0f4;
     padding-top: 19px;
@@ -283,7 +282,7 @@ body {
 .legend-dot {
     width: 9px;
     height: 9px;
-    background: #e66c5c;
+    background: #6f91da;
     border-radius: 50%;
 }
 

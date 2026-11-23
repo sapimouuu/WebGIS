@@ -1,104 +1,198 @@
-// Membuat peta dan menentukan titik tengah wilayah
+
+// MEMBUAT PETA
 const map = L.map('map').setView([-3.3194, 114.5908], 11);
 
-// Menambahkan peta dasar OpenStreetMap
-L.tileLayer(
-    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }
-).addTo(map);
+// PETA DASAR OPENSTREETMAP
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
 
-//data dari geojson
+// VARIABEL DATA
 let allFeatures = [];
 let resultLayer;
-fetch('data/rumah_makan.geojson')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('File GeoJSON tidak ditemukan');
+
+// ELEMEN HTML
+const searchInput = document.getElementById('search');
+const regionButtons = document.querySelectorAll('.region-list button');
+const operationalFilter = document.getElementById('operasional');
+const priceFilter = document.getElementById('harga');
+const resultCount = document.querySelector('.result-header span');
+const resultSection = document.querySelector('.result-section');
+const emptyResult = document.querySelector('.empty-result');
+
+// DROPDOWN DAFTAR RUMAH MAKAN
+const dropdown = document.createElement('details');
+dropdown.className = 'result-dropdown';
+
+const dropdownTitle = document.createElement('summary');
+dropdownTitle.textContent = 'Lihat Daftar Rumah Makan';
+
+const resultList = document.createElement('div');
+resultList.className = 'result-list';
+
+dropdown.appendChild(dropdownTitle);
+dropdown.appendChild(resultList);
+
+// WILAYAH BERDASARKAN ALAMAT
+function filterRegion(feature, region) {
+    if (region === 'Semua Wilayah') return true;
+
+    const address = feature.properties.alamat.toLowerCase();
+
+    if (region === 'Banjarmasin') {
+        return address.includes('banjarmasin');
+    }
+
+    if (region === 'Banjarbaru') {
+        return address.includes('banjarbaru') ||
+               address.includes('banjar baru');
+    }
+
+    if (region === 'Martapura') {
+        return address.includes('martapura');
+    }
+
+    return true;
+}
+
+// MEMERIKSA JAM OPERASIONAL
+function isOpen24Hours(hours) {
+    return hours.toLowerCase().includes('buka 24 jam');
+}
+
+function isOpenAfter23(hours) {
+    const text = hours.trim();
+
+    if (isOpen24Hours(text)) return true;
+
+    const match = text.match(
+        /(\d{1,2})[.:](\d{2})\s*[–—-]\s*(\d{1,2})[.:](\d{2})/
+    );
+
+    if (!match) return false;
+
+    const start = Number(match[1]) * 60 + Number(match[2]);
+    let end = Number(match[3]) * 60 + Number(match[4]);
+
+    // Jika melewati tengah malam
+    if (end <= start) {
+        end += 1440;
+    }
+
+    // Pukul 23.00 = 1380 menit
+    return start <= 1380 && end > 1380;
+}
+
+// FILTER HARGA BERDASARKAN BATAS DATA
+function filterPrice(price, selectedPrice) {
+    if (selectedPrice === '') return true;
+
+    const match = price.match(/<\s*Rp\s*([\d.]+)/i);
+
+    if (!match) return false;
+
+    const limit = Number(match[1].replace(/\./g, ''));
+
+    if (selectedPrice === '15000') {
+        return limit <= 15000;
+    }
+
+    if (selectedPrice === '25000') {
+        return limit > 15000 && limit <= 25000;
+    }
+
+    if (selectedPrice === '50000') {
+        return limit > 25000;
+    }
+
+    return true;
+}
+
+// MENAMPILKAN POPUP
+function createPopup(feature, layer) {
+    const info = feature.properties;
+
+    layer.bindPopup(`
+        <b>${info.tempat}</b><br>
+        ${info.alamat}<br><br>
+        <b>Jam Operasional:</b> ${info.jam_buka}<br>
+        <b>Kisaran Harga:</b> ${info.harga_makanan}<br><br>
+        <a href="${info.link}" target="_blank">
+            Lihat di Google Maps
+        </a>
+    `);
+}
+
+// MEMPERBARUI PETA DAN DAFTAR
+function updateResults() {
+    const keyword = searchInput.value.trim().toLowerCase();
+
+    const activeRegion = document.querySelector(
+        '.region-list button.active'
+    );
+
+    const region = activeRegion
+        ? activeRegion.textContent.trim()
+        : 'Semua Wilayah';
+
+    const operational = operationalFilter.value;
+    const price = priceFilter.value;
+
+    const filteredFeatures = allFeatures.filter(feature => {
+        const info = feature.properties;
+
+        const matchSearch =
+            info.tempat.toLowerCase().includes(keyword) ||
+            info.alamat.toLowerCase().includes(keyword);
+
+        const matchArea = filterRegion(feature, region);
+
+        let matchOperational = true;
+
+        if (operational === '23') {
+            matchOperational =
+                isOpenAfter23(info.jam_buka) &&
+                !isOpen24Hours(info.jam_buka);
+        } else if (operational === '00') {
+            matchOperational = isOpen24Hours(info.jam_buka);
         }
-        return response.json();
-    })
-    
-//menampilkan data rumah makan
-.then(data => {
-    allFeatures = data.features;
-    function updateMap(filteredData) {
-        // Menghapus marker sebelumnya
+
+        const matchPrice = filterPrice(
+            info.harga_makanan,
+            price
+        );
+
+        return matchSearch &&
+               matchArea &&
+               matchOperational &&
+               matchPrice;
+    });
+
+    // HAPUS MARKER LAMA
+    if (resultLayer) {
         map.removeLayer(resultLayer);
-
-        //menampilkan marker dri hasil filter
-        resultLayer = L.geoJSON(filteredData, {
-            onEachFeature: function(feature, layer) {
-                const info = feature.properties;
-
-                layer.bindPopup(`
-                    <b>${info.tempat}</b><br>
-                    ${info.alamat}<br><br>
-                    <b>Jam Operasional:</b> ${info.jam_buka}<br>
-                    <b>Kisaran Harga:</b> ${info.harga_makanan}<br><br>
-                    <a href="${info.link}" target="_blank">
-                        Lihat di Google Maps
-                    </a>
-                `);
-            }
-        }).addTo(map);
-    }
-    
-    // Fungsi mencari rumah makan berdasarkan nama atau alamat
-    function searchRestaurant(keyword) {
-        return allFeatures.filter(feature => {
-            const info = feature.properties;
-
-            return (
-                info.tempat.toLowerCase().includes(keyword.toLowerCase()) ||
-                info.alamat.toLowerCase().includes(keyword.toLowerCase())
-            );
-        });
     }
 
-    resultLayer = L.geoJSON(data, {
-        onEachFeature: function(feature, layer) {
-            const info = feature.properties;
-
-            layer.bindPopup(`
-                <b>${info.tempat}</b><br>
-                ${info.alamat}<br><br>
-                <b>Jam Operasional:</b> ${info.jam_buka}<br>
-                <b>Kisaran Harga:</b> ${info.harga_makanan}<br><br>
-                <a href="${info.link}" target="_blank">
-                    Lihat di Google Maps
-                </a>
-            `);
-        }
+    // TAMPILKAN MARKER BARU
+    resultLayer = L.geoJSON({
+        type: 'FeatureCollection',
+        features: filteredFeatures
+    }, {
+        onEachFeature: createPopup
     }).addTo(map);
 
-    // Mengambil elemen hasil pencarian
-    const resultCount = document.querySelector('.result-header span');
-    const resultSection = document.querySelector('.result-section');
-    const emptyResult = document.querySelector('.empty-result');
+    // PERBARUI JUMLAH HASIL
+    resultCount.textContent = `${filteredFeatures.length} lokasi`;
 
-    // Membuat dropdown daftar rumah makan
-    const dropdown = document.createElement('details');
-    dropdown.className = 'result-dropdown';
+    // PERBARUI DAFTAR RUMAH MAKAN
+    resultList.innerHTML = '';
 
-    const dropdownTitle = document.createElement('summary');
-    dropdownTitle.textContent = 'Lihat Daftar Rumah Makan';
-
-    const resultList = document.createElement('div');
-    resultList.className = 'result-list';
-
-    dropdown.appendChild(dropdownTitle);
-    dropdown.appendChild(resultList);
-
-    data.features.forEach((feature, index) => {
-        const info = feature.properties;
+    filteredFeatures.forEach((feature, index) => {
         const item = document.createElement('button');
 
         item.className = 'result-item';
-        item.textContent = info.tempat;
+        item.textContent = feature.properties.tempat;
 
-        // Klik nama untuk membuka lokasi pada peta
         item.addEventListener('click', function() {
             const layer = resultLayer.getLayers()[index];
 
@@ -109,84 +203,67 @@ fetch('data/rumah_makan.geojson')
         resultList.appendChild(item);
     });
 
-    // Memperbarui jumlah dan isi hasil pencarian
-    resultCount.textContent = `${data.features.length} lokasi`;
-    emptyResult.remove();
-    resultSection.appendChild(dropdown);
+    // PESAN JIKA HASIL KOSONG
+    if (filteredFeatures.length === 0) {
+        if (!document.querySelector('.no-result')) {
+            const message = document.createElement('p');
+            message.className = 'no-result';
+            message.textContent = 'Rumah makan tidak ditemukan.';
+            resultList.appendChild(message);
+        }
+    }
+}
 
-    const searchInput = document.getElementById('search');
+// AMBIL DATA GEOJSON
+fetch('data/rumah_makan.geojson')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('File GeoJSON tidak ditemukan');
+        }
 
-    searchInput.addEventListener('input', function() {
-        const keyword = this.value.trim();
-
-        // Mengambil data sesuai kata pencarian
-        const filteredFeatures = searchRestaurant(keyword);
-
-        // Memperbarui jumlah hasil
-        resultCount.textContent = `${filteredFeatures.length} lokasi`;
-
-        // Memperbarui marker pada peta
-        updateMap({
-            type: 'FeatureCollection',
-            features: filteredFeatures
-        });
-        // Memperbarui daftar rumah makan
-        resultList.innerHTML = '';
-
-        filteredFeatures.forEach((feature, index) => {
-            const info = feature.properties;
-            const item = document.createElement('button');
-
-            item.className = 'result-item';
-            item.textContent = info.tempat;
-
-            item.addEventListener('click', function() {
-                const layer = resultLayer.getLayers()[index];
-                map.setView(layer.getLatLng(), 16);
-                layer.openPopup();
-            });
-
-            resultList.appendChild(item);
-        });
+        return response.json();
     })
-})
-.catch(error => {
-        console.error('Gagal memuat GeoJSON:', error);
-});
+    .then(data => {
+        allFeatures = data.features;
 
-// Menyesuaikan ukuran peta dengan container
+        // HAPUS PESAN AWAL
+        if (emptyResult) {
+            emptyResult.remove();
+        }
+
+        // TAMBAHKAN DROPDOWN
+        resultSection.appendChild(dropdown);
+
+        // TAMPILKAN SEMUA DATA PADA AWAL
+        updateResults();
+
+        // PENCARIAN
+        searchInput.addEventListener('input', updateResults);
+
+        // FILTER WILAYAH
+        regionButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                regionButtons.forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                this.classList.add('active');
+
+                updateResults();
+            });
+        });
+
+        // FILTER JAM OPERASIONAL
+        operationalFilter.addEventListener('change', updateResults);
+
+        // FILTER HARGA
+        priceFilter.addEventListener('change', updateResults);
+    })
+    .catch(error => {
+        console.error('Gagal memuat GeoJSON:', error);
+    });
+
+// MENYESUAIKAN UKURAN PETA
 setTimeout(() => {
     map.invalidateSize();
 }, 100);
-
-
-// FILTER WILAYAH DAFTAR
-const regionButtons = document.querySelectorAll('.region-filter-list button');
-
-regionButtons.forEach(button => {
-    button.addEventListener('click', function() {
-        regionButtons.forEach(item => {
-            item.classList.remove('selected');
-        });
-
-        this.classList.add('selected');
-    });
-});
-
-// RESET FILTER
-const resetFilter = document.getElementById('resetFilter');
-
-if (resetFilter) {
-    resetFilter.addEventListener('click', function() {
-        document.getElementById('searchRestaurant').value = '';
-        document.getElementById('filterHours').selectedIndex = 0;
-        document.getElementById('filterPrice').selectedIndex = 0;
-        document.getElementById('sortRestaurant').selectedIndex = 0;
-
-        regionButtons.forEach(button => {
-            button.classList.remove('selected');
-        });
-
-        regionButtons[0].classList.add('selected');
-    });
-}
