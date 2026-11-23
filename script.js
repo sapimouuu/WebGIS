@@ -127,13 +127,9 @@ function createPopup(feature, layer) {
 function updateResults() {
     const keyword = searchInput.value.trim().toLowerCase();
 
-    const activeRegion = document.querySelector(
-        '.region-list button.active'
-    );
-
-    const region = activeRegion
-        ? activeRegion.textContent.trim()
-        : 'Semua Wilayah';
+    const activeRegions = Array.from(
+        document.querySelectorAll('.region-list button.active')
+    ).map(button => button.textContent.trim());
 
     const operational = operationalFilter.value;
     const price = priceFilter.value;
@@ -145,7 +141,9 @@ function updateResults() {
             info.tempat.toLowerCase().includes(keyword) ||
             info.alamat.toLowerCase().includes(keyword);
 
-        const matchArea = filterRegion(feature, region);
+        const matchArea = activeRegions.length === 0 ||
+        activeRegions.includes('Semua Wilayah') ||
+        activeRegions.some(region => filterRegion(feature, region));
 
         let matchOperational = true;
 
@@ -223,41 +221,68 @@ fetch('data/rumah_makan.geojson')
 
         return response.json();
     })
+    
     .then(data => {
-        allFeatures = data.features;
+    allFeatures = data.features;
 
-        // HAPUS PESAN AWAL
-        if (emptyResult) {
-            emptyResult.remove();
-        }
+    // MEMBACA PARAMETER DARI BERANDA
+    const params = new URLSearchParams(window.location.search);
 
-        // TAMBAHKAN DROPDOWN
-        resultSection.appendChild(dropdown);
+    const selectedRegions = (params.get('wilayah') || '')
+        .split(',')
+        .filter(Boolean);
 
-        // TAMPILKAN SEMUA DATA PADA AWAL
-        updateResults();
+    const keywordFromHome = params.get('cari');
 
-        // PENCARIAN
-        searchInput.addEventListener('input', updateResults);
-
-        // FILTER WILAYAH
+    // MENGAKTIFKAN WILAYAH YANG DIPILIH
+    if (selectedRegions.length > 0) {
         regionButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                regionButtons.forEach(item => {
-                    item.classList.remove('active');
-                });
+            const regionName = button.textContent.trim().toLowerCase();
 
-                this.classList.add('active');
-
-                updateResults();
-            });
+            button.classList.toggle(
+                'active',
+                selectedRegions.includes(regionName)
+            );
         });
+    }
 
-        // FILTER JAM OPERASIONAL
-        operationalFilter.addEventListener('change', updateResults);
+    // MEMASUKKAN KATA PENCARIAN DARI BERANDA
+    if (keywordFromHome) {
+        searchInput.value = keywordFromHome;
+    }
 
-        // FILTER HARGA
-        priceFilter.addEventListener('change', updateResults);
+    // HAPUS PESAN AWAL
+    if (emptyResult) {
+        emptyResult.remove();
+    }
+
+    // TAMBAHKAN DROPDOWN
+    resultSection.appendChild(dropdown);
+
+    // TAMPILKAN HASIL
+    updateResults();
+
+    // PENCARIAN
+    searchInput.addEventListener('input', updateResults);
+
+    // FILTER WILAYAH
+    regionButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            regionButtons.forEach(item => {
+                item.classList.remove('active');
+            });
+
+            this.classList.add('active');
+
+            updateResults();
+        });
+    });
+
+    // FILTER JAM OPERASIONAL
+    operationalFilter.addEventListener('change', updateResults);
+
+    // FILTER HARGA
+    priceFilter.addEventListener('change', updateResults);
     })
     .catch(error => {
         console.error('Gagal memuat GeoJSON:', error);
